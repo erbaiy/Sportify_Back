@@ -27,7 +27,7 @@ SportifyHub est une plateforme web qui simplifie la gestion des inscriptions, l'
     cd SportifyHub
     npm install
     ```
-3. Démarrez le serveur
+3. Démarrez le serveur  
     ```bash
     npm start
     ```
