@@ -21,8 +21,14 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/mongoose": "^10.1.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/serve-static": "^4.0.2",
+    "bcryptjs": "^2.4.3",
+    "mongoose": "^8.8.2",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
   },
