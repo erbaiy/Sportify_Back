@@ -9,12 +9,21 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+    try {
+      return this.authService.register(registerDto);
+    } catch (error) {
+      return error;
+    }
   }
 
   @Post('login')
   async login(@Body() registerDto: RegisterDto) {
-    return this.authService.login(registerDto);
+    try {
+      return this.authService.login(registerDto);
+    }
+    catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -23,4 +32,4 @@ export class AuthController {
   return 'Cette route est protégée';
 }
 
-}
+} 
