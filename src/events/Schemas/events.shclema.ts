@@ -8,6 +8,10 @@ export class Event {
   @Prop({ required: true, trim: true })
   title: string;
 
+  @Prop({ required: false })
+  image?: string;
+
+
   @Prop({ trim: true })
   description: string;
 
@@ -38,16 +42,3 @@ export class Event {
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
-
-// Validation middleware
-EventSchema.pre('save', function(next) {
-  if (this.registrationDeadline > this.date) {
-    return next(new Error('Registration deadline must be before event date'));
-  }
-  next();
-});
-
-// Method to check if event is full
-EventSchema.methods.isFull = function() {
-  return this.maxParticipants && this.participants.length >= this.maxParticipants;
-};

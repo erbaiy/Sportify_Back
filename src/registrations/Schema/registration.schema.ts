@@ -8,9 +8,15 @@ export class Registration {
   @Prop({ type: Types.ObjectId, ref: 'Event', required: true })
   event: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  participant: Types.ObjectId;
+  @Prop({ type: String, required: true })
+  participantName: String;
 
+  @Prop({
+    type:String,
+    required:true
+  })
+  participantEmail:String;
+  
   @Prop({ default: Date.now })
   registrationDate: Date;
 
