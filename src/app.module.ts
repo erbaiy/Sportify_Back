@@ -9,6 +9,8 @@ import { EventsModule } from './events/events.module';
 import { join } from 'path';
 import { MulterModule } from '@nestjs/platform-express';
 
+import { RegistrationModule } from './registrations/registration.module';
+
 
 
 
@@ -22,6 +24,7 @@ import { MulterModule } from '@nestjs/platform-express';
       serveRoot: '/uploads',
     }),
     EventsModule,
+    RegistrationModule,
   ],
 })
 export class AppModule {}

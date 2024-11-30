@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { AuthGuard } from './guards/auth.guard';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,9 +18,9 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() registerDto: RegisterDto) {
+  async login(@Body() LoginDto: LoginDto) {
     try {
-      return this.authService.login(registerDto);
+      return this.authService.login(LoginDto);
     }
     catch (error) {
       return error;

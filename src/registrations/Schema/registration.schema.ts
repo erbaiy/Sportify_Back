@@ -1,37 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import * as mongoose from 'mongoose';
 
-export type RegistrationDocument = HydratedDocument<Registration>;
-
-@Schema({ timestamps: true })
-export class Registration {
-  @Prop({ type: Types.ObjectId, ref: 'Event', required: true })
-  event: Types.ObjectId;
-
-  @Prop({ type: String, required: true })
-  participantName: String;
-
+@Schema({
+  timestamps: true,
+  collection: 'registrations',
+})
+export class Registration extends Document {
   @Prop({
-    type:String,
-    required:true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Event',
+    required: true,
   })
-  participantEmail:String;
-  
-  @Prop({ default: Date.now })
-  registrationDate: Date;
+  event: mongoose.Types.ObjectId;
 
   @Prop({
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled'],
-    default: 'pending'
+    required: true,
   })
-  status: string;
+  participantName: string;
 
-  @Prop({ type: Object, default: null })
-  additionalInfo?: Record<string, any>;
+  @Prop({
+    type: String,
+    required: true,
+  })
+  participantEmail: string;
+
+  @Prop({ type: Date, default: Date.now })
+  registrationDate: Date;
 }
 
 export const RegistrationSchema = SchemaFactory.createForClass(Registration);
 
-// Unique registration constraint
-RegistrationSchema.index({ event: 1, participant: 1 }, { unique: true });
+// Drop any existing indexes and create new ones
+RegistrationSchema.index(
+  { event: 1, participantEmail: 1 }, 
+  { unique: true, background: true }
+);
