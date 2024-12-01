@@ -71,16 +71,19 @@ export class EventsService {
   }
 
   async findOne(id: string): Promise<Event> {
-    return this.eventModel.findById(id).exec();
+    const event = await this.eventModel.findById(id).exec();
+    if (!event) {
+      throw new HttpException(`Event with ID ${id} not found`, 404);
+    }
+    return event;
   }
-
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     const existingEvent = await this.eventModel.findById(id);
-
+  
     if (!existingEvent) {
-      throw new Error(`Event with ID ${id} not found`);
+      throw new HttpException(`Event with ID ${id} not found`, 404); // Already throwing 404
     }
-
+  
     if (updateEventDto.image && existingEvent.image) {
       // Delete old image
       const oldImagePath = path.join('uploads', existingEvent.image);
@@ -88,13 +91,13 @@ export class EventsService {
         fs.unlinkSync(oldImagePath);
       }
     }
-
+  
     // Update the event with the new data
     return this.eventModel
       .findByIdAndUpdate(id, updateEventDto, { new: true })
       .exec();
   }
-
+  
   async delete(id: string): Promise<Event> {
     try {
       const event = await this.eventModel.findById(id);

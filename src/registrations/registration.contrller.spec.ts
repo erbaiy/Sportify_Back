@@ -139,6 +139,7 @@ describe('RegistrationController', () => {
       jest.spyOn(service, 'remove').mockResolvedValue(mockRegistration);
 
       const result = await controller.remove(registrationId);
+    
 
       expect(result).toBe(mockRegistration);
       expect(service.remove).toHaveBeenCalledWith(registrationId);
