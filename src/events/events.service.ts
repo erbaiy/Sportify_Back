@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Event, EventDocument } from './schemas/events.shclema';
+import { Event, EventDocument } from './Schemas/events.schema';
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -13,16 +13,30 @@ export class EventsService {
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
   ) {}
 
-  async create(createEventDto: CreateEventDto, organizer: string): Promise<Event> {
+  async create(
+    createEventDto: CreateEventDto,
+    organizer: string,
+  ): Promise<Event> {
     try {
-      createEventDto.maxParticipants = parseInt(createEventDto.maxParticipants as unknown as string, 10);
-      const isTitleExist = await this.eventModel.findOne({ title: createEventDto.title });
+      createEventDto.maxParticipants = parseInt(
+        createEventDto.maxParticipants as unknown as string,
+        10,
+      );
+      const isTitleExist = await this.eventModel.findOne({
+        title: createEventDto.title,
+      });
       if (isTitleExist) {
-        throw new HttpException(`Event with title ${createEventDto.title} already exists`, 400);
+        throw new HttpException(
+          `Event with title ${createEventDto.title} already exists`,
+          400,
+        );
       } else if (createEventDto.date < new Date()) {
         throw new HttpException('Event date cannot be in the past', 400);
       } else if (createEventDto.registrationDeadline > createEventDto.date) {
-        throw new HttpException('Registration deadline cannot be after the event date', 400);
+        throw new HttpException(
+          'Registration deadline cannot be after the event date',
+          400,
+        );
       }
 
       const newEvent = new this.eventModel({ ...createEventDto, organizer });
@@ -43,7 +57,6 @@ export class EventsService {
   //     } else if (createEventDto.registrationDeadline > createEventDto.date) {
   //       throw new HttpException('Registration deadline cannot be after the event date', 400);
   //     }
-      
 
   //     const newEvent = new this.eventModel({...createEventDto, organizer});
 
@@ -82,27 +95,26 @@ export class EventsService {
       .exec();
   }
 
-async delete(id: string): Promise<Event> {
+  async delete(id: string): Promise<Event> {
     try {
-        const event = await this.eventModel.findById(id);
-        console.log(event);
-        
-        if (event === null) {
-            throw new HttpException(`Event with ID ${id} not found`, 404
-            );
-        }
+      const event = await this.eventModel.findById(id);
+      console.log(event);
 
-        if (event.image) {
-            // Delete image file
-            const imagePath = path.join('uploads', event.image);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
-            }
-        }
+      if (event === null) {
+        throw new HttpException(`Event with ID ${id} not found`, 404);
+      }
 
-        return this.eventModel.findByIdAndDelete(id).exec();
+      if (event.image) {
+        // Delete image file
+        const imagePath = path.join('uploads', event.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+
+      return this.eventModel.findByIdAndDelete(id).exec();
     } catch (error) {
-        throw error;
+      throw error;
     }
-}
+  }
 }
