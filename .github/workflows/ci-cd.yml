@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: .
+        working-directory: .  # Root directory
 
     steps:
     - uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: './package-lock.json'
+        cache-dependency-path: './package-lock.json'  # Correct path
 
     - name: Install Dependencies
       run: npm ci
@@ -62,8 +62,8 @@ jobs:
     - name: Build and push Backend
       uses: docker/build-push-action@v4
       with:
-        context: ./Sportify_Back
-        file: ./Sportify_Back/Dockerfile
+        context: ./  # Use root as context
+        file: ./Dockerfile  # Dockerfile path in root
         push: true
         tags: |
           ${{ env.BACKEND_DOCKER_IMAGE }}:latest
@@ -71,5 +71,3 @@ jobs:
         build-args: |
           NODE_ENV=production
         no-cache: true
-
-    

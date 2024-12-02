@@ -128,33 +128,7 @@ describe('RegistrationService', () => {
       });
     });
 
-    // it('should create and return the registration successfully', async () => {
-    //   mockRegistrationModel.findOne.mockReturnValue({
-    //     exec: jest.fn().mockResolvedValue(null),
-    //   });
-    //   mockRegistrationModel.save = jest.fn().mockResolvedValue(mockRegistration);
-    //   mockEventModel.findById.mockReturnValue({
-    //     exec: jest.fn().mockResolvedValue(mockEvent),
-    //   });
-
-    //   const dto: CreateRegistrationDto = {
-    //     event: mockEvent._id.toString(),
-    //     participantEmail: 'test@example.com',
-    //     participantName: 'Test User',
-    //   };
-
-    //   const result = await service.create(dto);
-
-    //   expect(result).toMatchObject({
-    //     participantEmail: 'test@example.com',
-    //     participantName: 'Test User',
-    //   });
-    //   expect(mockEventModel.findByIdAndUpdate).toHaveBeenCalledWith(
-    //     mockEvent._id,
-    //     { $push: { registrations: expect.any(Object) } },
-    //     { new: true },
-    //   );
-    // });
+   
   });
 
   describe('findAll', () => {
