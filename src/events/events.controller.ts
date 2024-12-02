@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Post,
@@ -20,7 +19,7 @@ import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { multerOptions } from './../common/configs/multer.config';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('events')
 export class EventsController {
@@ -97,12 +96,11 @@ export class EventsController {
       if (file) {
         updateEventDto.image = file.filename; // If a file is uploaded, update image field
       }
-      
+
       // Call the service to update the event
-      const updatedEvent = await this.eventsService.update(id, updateEventDto); 
-  
+      const updatedEvent = await this.eventsService.update(id, updateEventDto);
+
       return updatedEvent; // If the event is updated successfully, return the updated event
-  
     } catch (error) {
       // Handle the error and throw an appropriate HTTP exception
       throw new HttpException(
@@ -111,7 +109,7 @@ export class EventsController {
       );
     }
   }
-  
+
   /**
    * Delete an event
    */
@@ -131,5 +129,3 @@ export class EventsController {
     }
   }
 }
-
-

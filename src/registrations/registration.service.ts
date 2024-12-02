@@ -4,7 +4,6 @@ import mongoose, { Model, Types } from 'mongoose';
 import { Registration } from './schemas/registration.schema';
 import { CreateRegistrationDto } from './dto/registration.dto';
 // import { Event } from 'src/events/schemas/events.schema';
-import { Event } from '../events/schemas/events.schema';
 
 @Injectable()
 export class RegistrationService {

@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsService } from './events.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { Event } from './schemas/events.schema';
 import { HttpException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),

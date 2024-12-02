@@ -2,11 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RegistrationService } from './registration.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Registration } from './schemas/registration.schema';
-import { Event } from '../events/schemas/events.schema';
 import mongoose, { Model, Types } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { CreateRegistrationDto } from './dto/registration.dto';
-import { exec } from 'child_process';
 
 describe('RegistrationService', () => {
   let service: RegistrationService;
@@ -127,8 +125,6 @@ describe('RegistrationService', () => {
         participantEmail: dto.participantEmail.toLowerCase().trim(),
       });
     });
-
-   
   });
 
   describe('findAll', () => {
