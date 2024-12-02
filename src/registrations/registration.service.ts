@@ -62,12 +62,12 @@ export class RegistrationService {
         )
         .exec()
         .catch((err) => {
-          console.error('Error updating event with registration:', err);
+          // console.error('Error updating event with registration:', err);
         });
 
       return savedRegistration;
     } catch (error) {
-      console.error('Registration error:', error);
+      // console.error('Registration error:', error);
 
       if (error instanceof HttpException) {
         throw error;

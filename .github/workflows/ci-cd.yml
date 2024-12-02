@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Sportify_Back  # Root directory
+        working-directory: .
 
     steps:
     - uses: actions/checkout@v3
