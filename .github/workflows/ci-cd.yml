@@ -28,46 +28,25 @@ jobs:
         cache: 'npm'
         cache-dependency-path: './package-lock.json'
 
-    - name: Install Dependencies
-      run: npm ci
-
-    - name: Run Tests
-      run: npm test
-
-  build-and-push:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-      id: docker_login
-      continue-on-error: false
-
-    - name: Check Docker Login Status
-      if: steps.docker_login.outcome == 'failure'
+    - name: List directory structure
       run: |
-        echo "Failed to log in to Docker Hub"
-        exit 1
+        pwd
+        ls -la
+        ls -la src/
+        ls -la src/events/ || echo "events directory not found"
+        ls -la src/registrations/ || echo "registrations directory not found"
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm list @nestjs/mongoose mongoose
 
-    - name: Build and push Backend
-      uses: docker/build-push-action@v4
-      with:
-        context: ./  # Use root as context
-        file: ./Dockerfile  # Dockerfile path in root
-        push: true
-        tags: |
-          ${{ env.BACKEND_DOCKER_IMAGE }}:latest
-          ${{ env.BACKEND_DOCKER_IMAGE }}:${{ github.sha }}
-        build-args: |
-          NODE_ENV=production
-        no-cache: true
+    - name: Build TypeScript
+      run: |
+        npm run build || {
+          echo "Build failed. Showing TypeScript errors:"
+          npx tsc --noEmit
+        }
+
+    - name: Run Tests with Verbose Output
+      run: npm test -- --verbose
