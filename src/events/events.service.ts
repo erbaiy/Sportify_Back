@@ -18,10 +18,9 @@ export class EventsService {
     organizer: string,
   ): Promise<Event> {
     try {
-      createEventDto.maxParticipants = parseInt(
-        createEventDto.maxParticipants as unknown as string,
-        10,
-      );
+      if (typeof createEventDto.maxParticipants === 'string') {
+        createEventDto.maxParticipants = parseInt(createEventDto.maxParticipants, 10);
+      }
       const isTitleExist = await this.eventModel.findOne({
         title: createEventDto.title,
       });
@@ -30,9 +29,9 @@ export class EventsService {
           `Event with title ${createEventDto.title} already exists`,
           400,
         );
-      } else if (createEventDto.date < new Date()) {
+      } else if (new Date(createEventDto.date) < new Date()) {
         throw new HttpException('Event date cannot be in the past', 400);
-      } else if (createEventDto.registrationDeadline > createEventDto.date) {
+      } else if (new Date(createEventDto.registrationDeadline) > new Date(createEventDto.date)) {
         throw new HttpException(
           'Registration deadline cannot be after the event date',
           400,
@@ -43,7 +42,10 @@ export class EventsService {
 
       return await newEvent.save();
     } catch (error) {
-      throw new Error(`Error creating event: ${error}`);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new Error(`Error creating event: ${error.message}`);
     }
   }
   // async create(createEventDto: CreateEventDto ,organizer:string): Promise<Event> {
