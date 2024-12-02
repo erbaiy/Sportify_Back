@@ -1,7 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Event, EventDocument } from './Schemas/events.schema';
+// import { Event, EventDocument } from './Schemas/events.schema';
+import { Event, EventDocument } from './schemas/events.schema';
+
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -19,7 +21,10 @@ export class EventsService {
   ): Promise<Event> {
     try {
       if (typeof createEventDto.maxParticipants === 'string') {
-        createEventDto.maxParticipants = parseInt(createEventDto.maxParticipants, 10);
+        createEventDto.maxParticipants = parseInt(
+          createEventDto.maxParticipants,
+          10,
+        );
       }
       const isTitleExist = await this.eventModel.findOne({
         title: createEventDto.title,
@@ -31,7 +36,10 @@ export class EventsService {
         );
       } else if (new Date(createEventDto.date) < new Date()) {
         throw new HttpException('Event date cannot be in the past', 400);
-      } else if (new Date(createEventDto.registrationDeadline) > new Date(createEventDto.date)) {
+      } else if (
+        new Date(createEventDto.registrationDeadline) >
+        new Date(createEventDto.date)
+      ) {
         throw new HttpException(
           'Registration deadline cannot be after the event date',
           400,
@@ -81,11 +89,11 @@ export class EventsService {
   }
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     const existingEvent = await this.eventModel.findById(id);
-  
+
     if (!existingEvent) {
       throw new HttpException(`Event with ID ${id} not found`, 404); // Already throwing 404
     }
-  
+
     if (updateEventDto.image && existingEvent.image) {
       // Delete old image
       const oldImagePath = path.join('uploads', existingEvent.image);
@@ -93,13 +101,13 @@ export class EventsService {
         fs.unlinkSync(oldImagePath);
       }
     }
-  
+
     // Update the event with the new data
     return this.eventModel
       .findByIdAndUpdate(id, updateEventDto, { new: true })
       .exec();
   }
-  
+
   async delete(id: string): Promise<Event> {
     try {
       const event = await this.eventModel.findById(id);

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsService } from './events.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { Event } from './Schemas/events.schema';
+import { Event } from './schemas/events.schema';
 import { HttpException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -31,12 +31,12 @@ describe('EventsService', () => {
   };
 
   beforeEach(async () => {
-    const MockEventModel = function(this: any, dto: any) {
+    const MockEventModel = function (this: any, dto: any) {
       this._id = mockEvent._id;
       Object.assign(this, dto);
       this.save = jest.fn().mockResolvedValue(this);
     } as any;
-    
+
     MockEventModel.prototype.save = jest.fn();
     MockEventModel.findOne = jest.fn();
     MockEventModel.find = jest.fn();
@@ -62,7 +62,6 @@ describe('EventsService', () => {
     jest.clearAllMocks();
   });
 
-
   describe('create', () => {
     it('should successfully create an event', async () => {
       const createEventDto = {
@@ -71,12 +70,12 @@ describe('EventsService', () => {
         date: new Date('2025-01-01'),
         registrationDeadline: new Date('2024-12-01'),
         maxParticipants: 100,
-        location: 'Test Location'
+        location: 'Test Location',
       };
       const organizer = 'user123';
 
       mockEventModel.findOne.mockResolvedValue(null);
-      
+
       const result = await service.create(createEventDto, organizer);
 
       expect(result).toBeDefined();
@@ -94,15 +93,15 @@ describe('EventsService', () => {
         registrationDeadline: new Date('2025-09-01'),
       };
       const organizer = 'user123';
-      
+
       mockEventModel.findOne.mockResolvedValue(mockEvent);
 
-      await expect(service.create(createEventDto, organizer))
-        .rejects
-        .toThrow(new HttpException(
+      await expect(service.create(createEventDto, organizer)).rejects.toThrow(
+        new HttpException(
           `Event with title ${createEventDto.title} already exists`,
-          400
-        ));
+          400,
+        ),
+      );
     });
 
     it('should throw error if event date is in the past', async () => {
@@ -111,12 +110,12 @@ describe('EventsService', () => {
         date: new Date('2020-01-01'),
         registrationDeadline: new Date('2019-12-01'),
       };
-      
+
       mockEventModel.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createEventDto, 'user123'))
-        .rejects
-        .toThrow(new HttpException('Event date cannot be in the past', 400));
+      await expect(service.create(createEventDto, 'user123')).rejects.toThrow(
+        new HttpException('Event date cannot be in the past', 400),
+      );
     });
 
     it('should throw error if registration deadline is after event date', async () => {
@@ -125,12 +124,15 @@ describe('EventsService', () => {
         date: new Date('2025-01-01'),
         registrationDeadline: new Date('2025-02-01'),
       };
-      
+
       mockEventModel.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createEventDto, 'user123'))
-        .rejects
-        .toThrow(new HttpException('Registration deadline cannot be after the event date', 400));
+      await expect(service.create(createEventDto, 'user123')).rejects.toThrow(
+        new HttpException(
+          'Registration deadline cannot be after the event date',
+          400,
+        ),
+      );
     });
   });
 
@@ -151,19 +153,19 @@ describe('EventsService', () => {
     it('should update the event', async () => {
       const updateDto = { title: 'Updated Event' };
       const updatedEvent = { ...mockEvent, ...updateDto };
-      
+
       mockEventModel.findById.mockResolvedValue(mockEvent);
       mockEventModel.findByIdAndUpdate.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(updatedEvent)
+        exec: jest.fn().mockResolvedValue(updatedEvent),
       });
 
       const result = await service.update(mockEvent._id, updateDto);
-      
+
       expect(result).toEqual(updatedEvent);
       expect(mockEventModel.findByIdAndUpdate).toHaveBeenCalledWith(
         mockEvent._id,
         updateDto,
-        { new: true }
+        { new: true },
       );
     });
 
@@ -171,15 +173,15 @@ describe('EventsService', () => {
       const updateDto = { image: 'new-image.jpg' };
       const updatedEvent = { ...mockEvent, ...updateDto };
       const expectedPath = path.join('uploads', 'image.jpg');
-      
+
       mockEventModel.findById.mockResolvedValue(mockEvent);
       mockEventModel.findByIdAndUpdate.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(updatedEvent)
+        exec: jest.fn().mockResolvedValue(updatedEvent),
       });
       (fs.existsSync as jest.Mock).mockReturnValue(true);
 
       await service.update(mockEvent._id, updateDto);
-      
+
       expect(fs.unlinkSync).toHaveBeenCalledWith(expectedPath);
     });
   });
@@ -187,29 +189,28 @@ describe('EventsService', () => {
   describe('delete', () => {
     it('should delete event and its image', async () => {
       const expectedPath = path.join('uploads', 'image.jpg');
-      
+
       mockEventModel.findById.mockResolvedValue(mockEvent);
       mockEventModel.findByIdAndDelete.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(mockEvent)
+        exec: jest.fn().mockResolvedValue(mockEvent),
       });
       (fs.existsSync as jest.Mock).mockReturnValue(true);
 
       const result = await service.delete(mockEvent._id);
-      
+
       expect(result).toEqual(mockEvent);
       expect(fs.unlinkSync).toHaveBeenCalledWith(expectedPath);
-      expect(mockEventModel.findByIdAndDelete).toHaveBeenCalledWith(mockEvent._id);
+      expect(mockEventModel.findByIdAndDelete).toHaveBeenCalledWith(
+        mockEvent._id,
+      );
     });
 
     it('should throw error if event not found during deletion', async () => {
       mockEventModel.findById.mockResolvedValue(null);
 
-      await expect(service.delete(mockEvent._id))
-        .rejects
-        .toThrow(new HttpException(
-          `Event with ID ${mockEvent._id} not found`,
-          404
-        ));
+      await expect(service.delete(mockEvent._id)).rejects.toThrow(
+        new HttpException(`Event with ID ${mockEvent._id} not found`, 404),
+      );
     });
   });
 });

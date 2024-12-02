@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
-import { Registration } from './Schema/registration.schema';
+import { Registration } from './schemas/registration.schema';
 import { CreateRegistrationDto } from './dto/registration.dto';
 // import { Event } from 'src/events/schemas/events.schema';
 import { Event } from '../events/schemas/events.schema';
-
 
 @Injectable()
 export class RegistrationService {
@@ -14,7 +13,6 @@ export class RegistrationService {
     private registrationModel: Model<Registration>,
     @InjectModel(Event.name) private eventModel: Model<Event>,
   ) {}
-
 
   async create(
     createRegistrationDto: CreateRegistrationDto,
@@ -88,8 +86,7 @@ export class RegistrationService {
       );
     }
   }
-     // _________________________________
-
+  // _________________________________
 
   async findAll(query: Record<string, any>): Promise<Registration[]> {
     try {
@@ -103,9 +100,9 @@ export class RegistrationService {
         `Error fetching registrations: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    } 
+    }
   }
-     //_______________________________
+  //_______________________________
 
   async findOne(id: string): Promise<Registration> {
     try {
@@ -129,7 +126,7 @@ export class RegistrationService {
       );
     }
   }
-     //_______________________________
+  //_______________________________
 
   async update(
     id: string,
@@ -174,7 +171,7 @@ export class RegistrationService {
       );
     }
   }
-     //_______________________________
+  //_______________________________
   async remove(id: string): Promise<Registration> {
     try {
       const deletedRegistration = await this.registrationModel

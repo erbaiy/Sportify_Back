@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Event, EventSchema } from './Schemas/events.schema';
+// import { Event, EventSchema } from './Schemas/events.schema';
+import { Event, EventSchema } from './schemas/events.schema';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';

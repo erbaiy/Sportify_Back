@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RegistrationService } from './registration.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { Registration } from './Schema/registration.schema';
+import { Registration } from './schemas/registration.schema';
 import { Event } from '../events/schemas/events.schema';
 import mongoose, { Model, Types } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -45,7 +45,7 @@ describe('RegistrationService', () => {
     }),
     findByIdAndUpdate: jest.fn(),
   };
-  
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -60,12 +60,13 @@ describe('RegistrationService', () => {
         },
       ],
     }).compile();
-  
+
     service = module.get<RegistrationService>(RegistrationService);
-    registrationModel = module.get<Model<Registration>>(getModelToken(Registration.name));
+    registrationModel = module.get<Model<Registration>>(
+      getModelToken(Registration.name),
+    );
     eventModel = module.get<Model<Event>>(getModelToken(Event.name));
   });
-  
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -78,25 +79,25 @@ describe('RegistrationService', () => {
       participantName: 'Test User',
     };
 
-    it('should successfully create a registration', async () => {
-     
-    });
+    it('should successfully create a registration', async () => {});
     it('should throw an error if the event does not exist', async () => {
       mockEventModel.findById.mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue(null),
       });
-  
+
       const dto: CreateRegistrationDto = {
         event: new mongoose.Types.ObjectId().toString(),
         participantEmail: 'test@example.com',
         participantName: 'Test User',
       };
-  
+
       await expect(service.create(dto)).rejects.toThrowError(
         new HttpException('Event not found', HttpStatus.NOT_FOUND),
       );
-  
-      expect(mockEventModel.findById).toHaveBeenCalledWith(expect.any(mongoose.Types.ObjectId));
+
+      expect(mockEventModel.findById).toHaveBeenCalledWith(
+        expect.any(mongoose.Types.ObjectId),
+      );
     });
 
     it('should throw an error if the email is already registered for the event', async () => {
@@ -107,20 +108,20 @@ describe('RegistrationService', () => {
       mockRegistrationModel.findOne.mockReturnValueOnce({
         exec: jest.fn().mockResolvedValue({}),
       });
-  
+
       const dto: CreateRegistrationDto = {
         event: eventObjectId.toString(),
         participantEmail: 'test@example.com',
         participantName: 'Test User',
       };
-  
+
       await expect(service.create(dto)).rejects.toThrowError(
         new HttpException(
           'This email is already registered for this event',
           HttpStatus.CONFLICT,
         ),
       );
-  
+
       expect(mockRegistrationModel.findOne).toHaveBeenCalledWith({
         event: eventObjectId,
         participantEmail: dto.participantEmail.toLowerCase().trim(),
@@ -135,16 +136,15 @@ describe('RegistrationService', () => {
     //   mockEventModel.findById.mockReturnValue({
     //     exec: jest.fn().mockResolvedValue(mockEvent),
     //   });
-            
 
     //   const dto: CreateRegistrationDto = {
     //     event: mockEvent._id.toString(),
     //     participantEmail: 'test@example.com',
     //     participantName: 'Test User',
     //   };
-    
+
     //   const result = await service.create(dto);
-    
+
     //   expect(result).toMatchObject({
     //     participantEmail: 'test@example.com',
     //     participantName: 'Test User',
@@ -155,8 +155,6 @@ describe('RegistrationService', () => {
     //     { new: true },
     //   );
     // });
-    
-
   });
 
   describe('findAll', () => {
@@ -198,7 +196,9 @@ describe('RegistrationService', () => {
       const result = await service.findOne(registrationId);
 
       expect(result).toEqual(mockRegistration);
-      expect(mockRegistrationModel.findById).toHaveBeenCalledWith(registrationId);
+      expect(mockRegistrationModel.findById).toHaveBeenCalledWith(
+        registrationId,
+      );
     });
 
     it('should throw NOT_FOUND if registration does not exist', async () => {
@@ -209,7 +209,7 @@ describe('RegistrationService', () => {
       });
 
       await expect(service.findOne(registrationId)).rejects.toThrow(
-        new HttpException('Registration not found', HttpStatus.NOT_FOUND)
+        new HttpException('Registration not found', HttpStatus.NOT_FOUND),
       );
     });
   });
@@ -221,7 +221,9 @@ describe('RegistrationService', () => {
     it('should update a registration', async () => {
       mockRegistrationModel.findByIdAndUpdate.mockReturnValue({
         populate: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue({ ...mockRegistration, ...updateDto }),
+          exec: jest
+            .fn()
+            .mockResolvedValue({ ...mockRegistration, ...updateDto }),
         }),
       });
 
@@ -231,7 +233,7 @@ describe('RegistrationService', () => {
       expect(mockRegistrationModel.findByIdAndUpdate).toHaveBeenCalledWith(
         registrationId,
         updateDto,
-        { new: true }
+        { new: true },
       );
     });
 
@@ -243,7 +245,7 @@ describe('RegistrationService', () => {
       });
 
       await expect(service.update(registrationId, updateDto)).rejects.toThrow(
-        new HttpException('Registration not found', HttpStatus.NOT_FOUND)
+        new HttpException('Registration not found', HttpStatus.NOT_FOUND),
       );
     });
   });
@@ -259,7 +261,9 @@ describe('RegistrationService', () => {
       const result = await service.remove(registrationId);
 
       expect(result).toEqual(mockRegistration);
-      expect(mockRegistrationModel.findByIdAndDelete).toHaveBeenCalledWith(registrationId);
+      expect(mockRegistrationModel.findByIdAndDelete).toHaveBeenCalledWith(
+        registrationId,
+      );
     });
 
     it('should throw NOT_FOUND if registration does not exist', async () => {
@@ -268,7 +272,7 @@ describe('RegistrationService', () => {
       });
 
       await expect(service.remove(registrationId)).rejects.toThrow(
-        new HttpException('Registration not found', HttpStatus.NOT_FOUND)
+        new HttpException('Registration not found', HttpStatus.NOT_FOUND),
       );
     });
   });
