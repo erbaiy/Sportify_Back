@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Registration } from './Schema/registration.schema';
 import { CreateRegistrationDto } from './dto/registration.dto';
-import { MongoError } from 'mongodb';
-import { Event } from 'src/events/schemas/events.shclema';
-import { log } from 'console';
+// import { Event } from 'src/events/schemas/events.schema';
+import { Event } from '../events/schemas/events.schema';
+
 
 @Injectable()
 export class RegistrationService {
@@ -15,73 +15,6 @@ export class RegistrationService {
     @InjectModel(Event.name) private eventModel: Model<Event>,
   ) {}
 
-  //   async create(createRegistrationDto: CreateRegistrationDto): Promise<Registration> {
-  //     try {
-  //         const { event: eventId, participantEmail } = createRegistrationDto;
-
-  //         // Fetch the event
-  //         const event = await this.eventModel.findById(eventId).exec();
-
-  //         if (!event) {
-  //             throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
-  //         }
-
-  //         // Check if the event is still accepting registrations
-  //         if (new Date() > new Date(event.registrationDeadline)) {
-  //             throw new HttpException(
-  //                 'Registration deadline has passed for this event',
-  //                 HttpStatus.BAD_REQUEST
-  //             );
-  //         }
-
-  //         // Check if the email is already registered for this event
-  //         const existingRegistration = await this.registrationModel.findOne({
-  //             event: eventId,
-  //             participantEmail: participantEmail,
-  //         }).exec();
-  //         console.log("vqsdfqsdfqsd",existingRegistration);
-
-  //         if (existingRegistration) {
-  //             throw new HttpException(
-  //                 'This email is already registered for this event',
-  //                 HttpStatus.CONFLICT
-  //             );
-  //         }
-
-  //         // Create a new registration (without participant field)
-  //         const newRegistration = new this.registrationModel({
-  //             ...createRegistrationDto,
-  //             registrationDate: new Date()
-  //         });
-
-  //         const savedRegistration = await newRegistration.save();
-
-  //         // Add the registration to the event's participants
-  //         await this.eventModel.findByIdAndUpdate(
-  //             eventId,
-  //             { $push: { participants: savedRegistration._id } }
-  //         ).exec();
-
-  //         return savedRegistration;
-  //     } catch (error) {
-  //         if (error instanceof HttpException) {
-  //             throw error;
-  //         }
-
-  //         // Handle MongoDB duplicate key error
-  //         if (error.code === 11000) {
-  //             throw new HttpException(
-  //                 'This email is already registered for this event',
-  //                 HttpStatus.CONFLICT
-  //             );
-  //         }
-
-  //         throw new HttpException(
-  //             `Failed to create registration: ${error.message}`,
-  //             HttpStatus.INTERNAL_SERVER_ERROR
-  //         );
-  //     }
-  // }
 
   async create(
     createRegistrationDto: CreateRegistrationDto,
