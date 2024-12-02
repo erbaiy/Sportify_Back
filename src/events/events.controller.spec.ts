@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventsController } from './../events/events.controller';
-import { EventsService } from './../events/events.service';
-import { CreateEventDto } from './../events/dto/create-event.dto';
-import { UpdateEventDto } from './../events/dto/update-event.dto';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
+import { EventsController } from './events.controller';
+import { EventsService } from './events.service';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { JwtStrategy } from '../auth/strategies/jwt.strategy';
 import { Types } from 'mongoose';
 
 // Mock AuthGuard and JwtStrategy
@@ -99,7 +99,11 @@ describe('EventsController', () => {
       const organizer = 'user123';
       jest.spyOn(service, 'create').mockResolvedValue(mockEvent);
 
-      const result = await controller.create(createEventDto, mockFile, mockRequest);
+      const result = await controller.create(
+        createEventDto,
+        mockFile,
+        mockRequest,
+      );
 
       expect(service.create).toHaveBeenCalledWith(createEventDto, organizer);
       expect(result).toEqual(mockEvent);
@@ -114,7 +118,9 @@ describe('EventsController', () => {
         maxParticipants: 3,
         registrationDeadline: new Date('2025-09-01T00:00:00.000Z'),
       };
-      jest.spyOn(service, 'create').mockRejectedValue(new Error('Failed to create event'));
+      jest
+        .spyOn(service, 'create')
+        .mockRejectedValue(new Error('Failed to create event'));
 
       try {
         await controller.create(createEventDto, mockFile, mockRequest);
@@ -159,9 +165,16 @@ describe('EventsController', () => {
       };
       jest.spyOn(service, 'update').mockResolvedValue(mockEvent);
 
-      const result = await controller.update(mockEvent._id.toString(), updateEventDto, mockFile);
+      const result = await controller.update(
+        mockEvent._id.toString(),
+        updateEventDto,
+        mockFile,
+      );
 
-      expect(service.update).toHaveBeenCalledWith(mockEvent._id.toString(), updateEventDto);
+      expect(service.update).toHaveBeenCalledWith(
+        mockEvent._id.toString(),
+        updateEventDto,
+      );
       expect(result).toEqual(mockEvent);
     });
 
@@ -177,7 +190,11 @@ describe('EventsController', () => {
       jest.spyOn(service, 'update').mockResolvedValue(null);
 
       try {
-        await controller.update(mockEvent._id.toString(), updateEventDto, mockFile);
+        await controller.update(
+          mockEvent._id.toString(),
+          updateEventDto,
+          mockFile,
+        );
       } catch (error) {
         expect(error.response).toBe('Event not found');
         expect(error.status).toBe(404); // Event not found should return NOT_FOUND
