@@ -56,25 +56,7 @@ export class EventsService {
       throw new Error(`Error creating event: ${error.message}`);
     }
   }
-  // async create(createEventDto: CreateEventDto ,organizer:string): Promise<Event> {
 
-  //   try {
-  //     const isTitleExist = await this.eventModel.findOne({ title: createEventDto.title });
-  //     if (isTitleExist) {
-  //       throw new HttpException(`Event with title ${createEventDto.title} already exists`, 400);
-  //     }else if (createEventDto.date < new Date()) {
-  //       throw new HttpException('Event date cannot be in the past', 400);
-  //     } else if (createEventDto.registrationDeadline > createEventDto.date) {
-  //       throw new HttpException('Registration deadline cannot be after the event date', 400);
-  //     }
-
-  //     const newEvent = new this.eventModel({...createEventDto, organizer});
-
-  //     return await newEvent.save();
-  //   } catch (error) {
-  //     throw new Error(`Error creating event: ${error}`);
-  //   }
-  // }
 
   async findAll(query: any): Promise<Event[]> {
     return this.eventModel.find(query).exec();

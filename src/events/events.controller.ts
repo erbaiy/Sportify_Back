@@ -21,6 +21,8 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { multerOptions } from './../common/configs/multer.config';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
+
+
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
@@ -29,6 +31,7 @@ export class EventsController {
    * Create a new event
    */
   @Post()
+  
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image', multerOptions))
   async create(
@@ -36,6 +39,8 @@ export class EventsController {
     @UploadedFile() file: Express.Multer.File,
     @Req() req: any,
   ) {
+
+    console.log(req.user,file,createEventDto);
     try {
       const organizer = req.user.sub; // JWT sub is passed from the auth guard
       if (file) {
