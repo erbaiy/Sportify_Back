@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
   build-and-push:
-    needs: test
+    needs: intall-dependencies
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
 
