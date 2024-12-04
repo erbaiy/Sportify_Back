@@ -7,7 +7,7 @@ on:
     branches: ['main']
 
 env:
-  BACKEND_DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/Sportify_Back
+  BACKEND_DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/sportify_back
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
