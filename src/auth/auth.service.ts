@@ -44,7 +44,7 @@ export class AuthService {
        
     
         // Hash the password before saving to DB
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds of salt
+        const hashedPassword = await bcrypt.hash(password, 10); 
     
         // Create new user with hashed password
         const newUser = new this.userModel({

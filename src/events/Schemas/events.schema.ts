@@ -22,7 +22,7 @@ export class Event {
   location: string;
 
   @Prop()
-  maxParticipants?: number; // Maximum number of participants allowed
+  maxParticipants?: number; // Maximum number of participants 
 
   @Prop({ required: true })
   registrationDeadline: Date;
