@@ -79,7 +79,7 @@ on:
     branches: ['main']
 
 env:
-  BACKEND_DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/sportify-back  # Changed to lowercase with hyphen
+  BACKEND_DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/sportify_back  # Changed to lowercase with hyphen
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
