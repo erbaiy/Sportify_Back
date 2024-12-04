@@ -58,8 +58,8 @@ jobs:
       - name: Build and push Backend
         uses: docker/build-push-action@v4
         with:
-          context: ./sportify-back
-          file: ./sportify-back/Dockerfile
+          context: ./
+          file: ./Dockerfile
           push: true
           tags: |
             ${{ env.BACKEND_DOCKER_IMAGE }}:latest
